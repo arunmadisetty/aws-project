@@ -5,5 +5,5 @@ resource "aws_key_pair" "arun" {
 
 variable "key_name" {
     type = string
-    default = "terraform-github"
+    default = "aws-project"
 }
