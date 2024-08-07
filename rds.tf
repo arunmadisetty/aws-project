@@ -37,7 +37,7 @@ resource "aws_security_group" "aws-project" {
 
 resource "aws_rds_cluster" "aws-project" {
   cluster_identifier      = "aws-project-cluster"
-  engine                  = "aurora"  # Replace with your desired engine (e.g., aurora-mysql, aurora-postgresql)
+  engine                  = "aurora-mysql"  # Replace with your desired engine (e.g., aurora-mysql, aurora-postgresql)
   master_username         = "admin"
   master_password         = "password"  # Replace with your desired password
   database_name           = "aws-projectdb"
