@@ -14,7 +14,7 @@ resource "aws_db_subnet_group" "aws-project" {
 resource "aws_security_group" "aws-project" {
   name        = "aws-project-rds-sg"
   description = "Allow traffic to RDS instances"
-  vpc_id      = aws_vpc.vpc_id  # Replace with your VPC ID
+#   vpc_id      = aws_vpc.vpc_id  # Replace with your VPC ID
 
   ingress {
     from_port   = 3306  # Replace with your desired port (e.g., 3306 for MySQL)
