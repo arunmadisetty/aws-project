@@ -18,8 +18,8 @@ resource "aws_launch_template" "aws-project" {
 
 resource "aws_autoscaling_group" "aws-project" {
   desired_capacity     = 1
-  max_size             = 1
-  min_size             = 99
+  max_size             = 99
+  min_size             = 1
 #   vpc_zone_identifier  = ["subnet-067b04afc5c37b83b, subnet-0fd731d092d7bd8f1, subnet-0440999efa9098ea6"]  # Replace with your subnet ID
   launch_template {
     id      = aws_launch_template.aws-project.id
