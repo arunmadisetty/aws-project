@@ -14,7 +14,7 @@ resource "aws_db_subnet_group" "aws-project" {
 resource "aws_security_group" "aws-project" {
   name        = "aws-project-rds-sg"
   description = "Allow traffic to RDS instances"
-#   vpc_id      = aws_vpc.vpc_id  # Replace with your VPC ID
+   #vpc_id      = aws_vpc.vpc_id  # Replace with your VPC ID
 
   ingress {
     from_port   = 3306  # Replace with your desired port (e.g., 3306 for MySQL)
@@ -52,30 +52,58 @@ resource "aws_rds_cluster" "aws-project" {
   }
 }
 
-resource "aws_rds_cluster_instance" "aws-project_instance1" {
-  identifier              = "aws-project-instance-1"
+resource "aws_rds_cluster_instance" "aws-project-writer" {
+  identifier              = "aws-project-writer"
   cluster_identifier      = aws_rds_cluster.aws-project.id
-  instance_class          = "db.r5.large"  # Replace with your desired instance class
+  instance_class          = "db.t4g.micro"  # Replace with your desired instance class
   engine                  = aws_rds_cluster.aws-project.engine
   engine_version          = "5.7.mysql_aurora.2.07.1"  # Replace with your desired engine version
   publicly_accessible     = false
   db_subnet_group_name    = aws_db_subnet_group.aws-project.name
 
   tags = {
-    Name = "aws-project-instance-1"
+    Name = "aws-project-writer"
   }
 }
 
-resource "aws_rds_cluster_instance" "aws-project_instance2" {
-  identifier              = "aws-project-instance-2"
+resource "aws_rds_cluster_instance" "aws-project-reader-1" {
+  identifier              = "aws-project-reader-1"
   cluster_identifier      = aws_rds_cluster.aws-project.id
-  instance_class          = "db.r5.large"  # Replace with your desired instance class
+  instance_class          = "db.t4g.micro"  # Replace with your desired instance class
   engine                  = aws_rds_cluster.aws-project.engine
   engine_version          = "5.7.mysql_aurora.2.07.1"  # Replace with your desired engine version
   publicly_accessible     = false
   db_subnet_group_name    = aws_db_subnet_group.aws-project.name
 
   tags = {
-    Name = "aws-project-instance-2"
+    Name = "aws-project-reader-1"
+  }
+}
+
+resource "aws_rds_cluster_instance" "aws-project-reader-2" {
+  identifier              = "aws-project-reader-2"
+  cluster_identifier      = aws_rds_cluster.aws-project.id
+  instance_class          = "db.t4g.micro"  # Replace with your desired instance class
+  engine                  = aws_rds_cluster.aws-project.engine
+  engine_version          = "5.7.mysql_aurora.2.07.1"  # Replace with your desired engine version
+  publicly_accessible     = false
+  db_subnet_group_name    = aws_db_subnet_group.aws-project.name
+
+  tags = {
+    Name = "aws-project-reader-2"
+  }
+}
+
+resource "aws_rds_cluster_instance" "aws-project-reader-1" {
+  identifier              = "aws-project-reader-3"
+  cluster_identifier      = aws_rds_cluster.aws-project.id
+  instance_class          = "db.t4g.micro"  # Replace with your desired instance class
+  engine                  = aws_rds_cluster.aws-project.engine
+  engine_version          = "5.7.mysql_aurora.2.07.1"  # Replace with your desired engine version
+  publicly_accessible     = false
+  db_subnet_group_name    = aws_db_subnet_group.aws-project.name
+
+  tags = {
+    Name = "aws-project-reader-3"
   }
 }
