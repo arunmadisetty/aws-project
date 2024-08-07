@@ -94,7 +94,7 @@ resource "aws_rds_cluster_instance" "aws-project-reader-2" {
   }
 }
 
-resource "aws_rds_cluster_instance" "aws-project-reader-1" {
+resource "aws_rds_cluster_instance" "aws-project-reader-3" {
   identifier              = "aws-project-reader-3"
   cluster_identifier      = aws_rds_cluster.aws-project.id
   instance_class          = "db.t4g.micro"  # Replace with your desired instance class
