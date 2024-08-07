@@ -20,7 +20,7 @@ resource "aws_autoscaling_group" "aws-project" {
   desired_capacity     = 1
   max_size             = 99
   min_size             = 1
-#   vpc_zone_identifier  = ["subnet-067b04afc5c37b83b, subnet-0fd731d092d7bd8f1, subnet-0440999efa9098ea6"]  # Replace with your subnet ID
+  vpc_zone_identifier  = [aws_subnet.terraform.id, aws_subnet.terraform1.id, aws_subnet.terraform2.id]  # Replace with your subnet ID
   launch_template {
     id      = aws_launch_template.aws-project.id
     version = "$Latest"
