@@ -1,9 +1,9 @@
 resource "aws_db_subnet_group" "aws-project" {
   name       = "aws-project-subnet-group"
   subnet_ids = [
-    aws_subnet.private_sub,
-    aws_subnet.private_sub2,
-    aws_subnet.private_sub3
+    aws_subnet.private_sub.id,
+    aws_subnet.private_sub2.id,
+    aws_subnet.private_sub3.id
     ]  # Replace with your subnet IDs
 
   tags = {
