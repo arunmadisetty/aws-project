@@ -1,10 +1,8 @@
-provider "aws" {
-  region = "us-east-2"  
-}
-
 # VPC
 resource "aws_vpc" "terraform" {
   cidr_block = "10.0.0.0/16"
+  enable_dns_support = true    
+  enable_dns_hostnames = true    
   tags = {
     Name = "TerraformVPC"
   }
@@ -138,7 +136,6 @@ resource "aws_route_table" "private_rt" {
 resource "aws_route_table_association" "private_association1" {
   subnet_id      = aws_subnet.private_sub.id
   route_table_id = aws_route_table.private_rt.id
-
 }
 
 resource "aws_route_table_association" "private_association2" {
