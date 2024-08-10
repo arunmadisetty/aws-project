@@ -1,77 +1,104 @@
-# resource "aws_db_subnet_group" "example" {
-#   name       = "example-subnet-group"
-#   subnet_ids = ["subnet-0123456789abcdef0", "subnet-0123456789abcdef1"]  # Replace with your subnet IDs
+resource "aws_db_subnet_group" "aws-project" {
+  name       = "aws-project-subnet-group"
+  subnet_ids = [
+    aws_subnet.private_sub.id,
+    aws_subnet.private_sub2.id,
+    aws_subnet.private_sub3.id
+  ]
 
-#   tags = {
-#     Name = "example-subnet-group"
-#   }
-# }
+  tags = {
+    Name = "aws-project-subnet-group"
+  }
+}
 
-# resource "aws_security_group" "example" {
-#   name        = "example-rds-sg"
-#   description = "Allow traffic to RDS instances"
-#   vpc_id      = "vpc-0123456789abcdef0"  # Replace with your VPC ID
+resource "aws_security_group" "rds_security_group" {
+  name        = "rds_security_group"
+  description = "Allow MySQL access from ASG instances"
 
-#   ingress {
-#     from_port   = 3306  # Replace with your desired port (e.g., 3306 for MySQL)
-#     to_port     = 3306
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]  # Replace with more restrictive CIDR blocks as needed
-#   }
+  vpc_id = aws_vpc.terraform.id
 
-#   egress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+  ingress {
+    description = "Database"
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    # cidr_blocks = ["0.0.0.0/0"] 
+    security_groups = [aws_security_group.terramino_instance.id]
+  }
 
-#   tags = {
-#     Name = "example-rds-sg"
-#   }
-# }
+  egress {
+    description = "Outbound"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 
-# resource "aws_rds_cluster" "example" {
-#   cluster_identifier      = "example-cluster"
-#   engine                  = "aurora"  # Replace with your desired engine (e.g., aurora-mysql, aurora-postgresql)
-#   master_username         = "admin"
-#   master_password         = "password"  # Replace with your desired password
-#   database_name           = "exampledb"
-#   db_subnet_group_name    = aws_db_subnet_group.example.name
-#   vpc_security_group_ids  = [aws_security_group.example.id]
+resource "aws_rds_cluster" "aws-project" {
+  cluster_identifier      = "aurora-cluster-demo"
+  engine                  = "aurora-mysql"
+  engine_version = "5.7.mysql_aurora.2.11.5"
+#   availability_zones      = ["us-west-2a", "us-west-2b", "us-west-2c"]
+  database_name           = "mydb"
+  master_username         = "foo"
+  master_password         = "must_be_eight_characters"
+  vpc_security_group_ids = [aws_security_group.rds_security_group.id]
+  db_subnet_group_name   = aws_db_subnet_group.aws-project.name
+  backup_retention_period = 5
+  skip_final_snapshot       = true
+  apply_immediately = true 
+}
 
-#   backup_retention_period = 7
-#   preferred_backup_window = "07:00-09:00"
+resource "aws_rds_cluster_instance" "cluster_writer" {
+  identifier = "cluster-writer"
+  cluster_identifier = aws_rds_cluster.aws-project.id
+  instance_class    = "db.t3.small"  
+  engine            = aws_rds_cluster.aws-project.engine
+  engine_version = aws_rds_cluster.aws-project.engine_version
+  db_subnet_group_name   = aws_db_subnet_group.aws-project.name
+  publicly_accessible = true
+  tags = {
+    Name = "cluster-writer"
+  }
+}
 
-#   tags = {
-#     Name = "example-cluster"
-#   }
-# }
+resource "aws_rds_cluster_instance" "aws-project-reader1" {
+  identifier = "aws-project-reader1"
+  cluster_identifier = aws_rds_cluster.aws-project.id
+  instance_class    = "db.t3.small"  
+  engine            = aws_rds_cluster.aws-project.engine
+  engine_version = aws_rds_cluster.aws-project.engine_version
+  db_subnet_group_name   = aws_db_subnet_group.aws-project.name
+  publicly_accessible = true
+  tags = {
+    Name = "aws-project-reader1"
+  }
+}
 
-# resource "aws_rds_cluster_instance" "example_instance1" {
-#   identifier              = "example-instance-1"
-#   cluster_identifier      = aws_rds_cluster.example.id
-#   instance_class          = "db.r5.large"  # Replace with your desired instance class
-#   engine                  = aws_rds_cluster.example.engine
-#   engine_version          = "5.7.mysql_aurora.2.07.1"  # Replace with your desired engine version
-#   publicly_accessible     = false
-#   db_subnet_group_name    = aws_db_subnet_group.example.name
+resource "aws_rds_cluster_instance" "aws-project-reader2" {
+  identifier = "aws-project-reader2"
+  cluster_identifier = aws_rds_cluster.aws-project.id
+  instance_class    = "db.t3.small"  
+  engine            = aws_rds_cluster.aws-project.engine
+  engine_version = aws_rds_cluster.aws-project.engine_version
+  db_subnet_group_name   = aws_db_subnet_group.aws-project.name
+  publicly_accessible = true
+  tags = {
+    Name = "aws-project-reader2"
+  }
+}
 
-#   tags = {
-#     Name = "example-instance-1"
-#   }
-# }
+resource "aws_rds_cluster_instance" "aws-project-reader3" {
+  identifier = "aws-project-reader3"
+  cluster_identifier = aws_rds_cluster.aws-project.id
+  instance_class    = "db.t3.small"  
+  engine            = aws_rds_cluster.aws-project.engine
+  engine_version = aws_rds_cluster.aws-project.engine_version
+  db_subnet_group_name   = aws_db_subnet_group.aws-project.name
+  publicly_accessible = true
+  tags = {
+    Name = "aws-project-reader3"
+  }
+}
 
-# resource "aws_rds_cluster_instance" "example_instance2" {
-#   identifier              = "example-instance-2"
-#   cluster_identifier      = aws_rds_cluster.example.id
-#   instance_class          = "db.r5.large"  # Replace with your desired instance class
-#   engine                  = aws_rds_cluster.example.engine
-#   engine_version          = "5.7.mysql_aurora.2.07.1"  # Replace with your desired engine version
-#   publicly_accessible     = false
-#   db_subnet_group_name    = aws_db_subnet_group.example.name
-
-#   tags = {
-#     Name = "example-instance-2"
-#   }
-# }
